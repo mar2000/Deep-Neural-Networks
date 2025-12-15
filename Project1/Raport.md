@@ -234,7 +234,11 @@ Parametr λ kontroluje balans między zadaniami:
 Kod dostępny w załączonym pliku `projekt.py`. Do uruchomienia:
 
 ```bash
-pip install -r requirements.txt
+pip install torch torchvision pandas numpy matplotlib scikit-learn tqdm pillow
+
+python3 -m venv venv
+source venv/bin/activate
+
 python3 projekt.py
 ```
 
