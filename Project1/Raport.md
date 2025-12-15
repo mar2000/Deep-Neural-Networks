@@ -38,6 +38,7 @@ Zbiór danych zawiera 10 000 obrazów 28×28 pikseli, każdy zawiera dokładnie 
 
 4 przykładowe obrazy ze zbioru. Widać binaryjną naturę danych.
 
+### 2.3 Podsumowanie
 
 ```bash
 ============================================================
@@ -126,13 +127,39 @@ Loss = NLLLoss(classification) + λ × SmoothL1Loss(regression)
 
 ### 5.1 Tabela wyników
 
-| Eksperyment | Czas [s] | Val Loss | Accuracy | F1-Score | RMSE | MAE |
-|-------------|----------|----------|----------|----------|------|-----|
-| Tylko klasyfikacja | [czas] | [loss] | [acc] | [f1] | [rmse] | [mae] |
-| Tylko regresja | [czas] | [loss] | [acc] | [f1] | [rmse] | [mae] |
-| Multitask (λ=1.0) | [czas] | [loss] | [acc] | [f1] | [rmse] | [mae] |
 
-*Uwaga: Wartości zostaną wypełnione po uruchomieniu programu.*
+```bash
+============================================================
+RAPORT Z EKSPERYMENTÓW
+============================================================
+
+Tylko klasyfikacja
+----------------------------------------
+Czas treningu: 603.2s
+Strata walidacja: 2.4176
+Dokładność: 0.2130
+F1-Score: 0.1496
+RMSE: 3.1855
+MAE: 1.9024
+
+Tylko regresja
+----------------------------------------
+Czas treningu: 678.9s
+Strata walidacja: 0.2429
+Dokładność: 0.0130
+F1-Score: 0.0008
+RMSE: 0.8078
+MAE: 0.4546
+
+Multitask (λ=1.0)
+----------------------------------------
+Czas treningu: 706.2s
+Strata walidacja: 2.4624
+Dokładność: 0.3260
+F1-Score: 0.2558
+RMSE: 1.0269
+MAE: 0.5927
+```
 
 ### 5.2 Krzywe uczenia
 
