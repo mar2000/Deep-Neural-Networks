@@ -36,6 +36,9 @@ Zbiór danych zawiera 10 000 obrazów 28×28 pikseli, każdy zawiera dokładnie 
 
 ![EDA Examples](eda_examples.png)
 
+4 przykładowe obrazy ze zbioru. Widać binaryjną naturę danych.
+
+
 ```bash
 ============================================================
 PODSUMOWANIE ANALIZY DANYCH
@@ -59,7 +62,7 @@ Unikalnych par: 15
   down-left: 662
 ```
 
-4 przykładowe obrazy ze zbioru. Widać binaryjną naturę danych.
+
 
 ## 3. Architektura modelu
 
