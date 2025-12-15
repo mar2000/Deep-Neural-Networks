@@ -30,7 +30,29 @@ Zbiór danych zawiera 10 000 obrazów 28×28 pikseli, każdy zawiera dokładnie 
 
 ![EDA Examples](eda_examples.png)
 
-![EDA Summary](eda_summary.txt)
+
+```bash
+============================================================
+PODSUMOWANIE ANALIZY DANYCH
+============================================================
+
+Liczba obrazów: 10000
+Trening: 9000
+Walidacja: 1000
+Unikalnych par: 15
+
+10 najczęstszych par:
+  circles-right: 703
+  up-right: 694
+  up-down: 688
+  circles-down: 682
+  circles-left: 681
+  squares-circles: 680
+  squares-down: 672
+  circles-up: 664
+  right-down: 663
+  down-left: 662
+```
 
 **Wykres A (lewy):** 8 najczęstszych par kształtów. Dominują kombinacje z trójkątami różnych orientacji.
 
