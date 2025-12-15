@@ -39,7 +39,7 @@ Zbiór danych zawiera 10 000 obrazów 28×28 pikseli, każdy zawiera dokładnie 
 4 przykładowe obrazy ze zbioru. Widać binaryjną naturę danych.
 
 
-
+```bash
 ============================================================
 PODSUMOWANIE ANALIZY DANYCH
 ============================================================
@@ -60,7 +60,7 @@ Unikalnych par: 15
   circles-up: 664
   right-down: 663
   down-left: 662
-
+```
 
 
 
@@ -90,8 +90,9 @@ nn.Linear(64 * 28 * 28, 256), nn.ReLU()
 
 ### 3.3 Funkcja straty
 
+```bash
 Loss = NLLLoss(classification) + λ × SmoothL1Loss(regression)
-
+```
 
 
 
@@ -204,9 +205,11 @@ Parametr λ kontroluje balans między zadaniami:
 ## 8. Kod i reprodukcja
 
 Kod dostępny w załączonym pliku `projekt.py`. Do uruchomienia:
-/```bash
+
+```bash
 pip install -r requirements.txt
 python3 projekt.py
+```
 
 
 Pełne trenowanie (~100 epok) zajmuje ~25 minut na Google Colab T4 GPU.
