@@ -243,5 +243,5 @@ python3 projekt.py
 ```
 
 
-Pełne trenowanie (~100 epok) zajmuje ~25 minut na Google Colab T4 GPU.
+Pełne trenowanie (~15 epok) zajmuje ~33 minut.
 
