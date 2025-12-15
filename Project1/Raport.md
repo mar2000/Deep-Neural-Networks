@@ -30,7 +30,7 @@ Zbiór danych zawiera 10 000 obrazów 28×28 pikseli, każdy zawiera dokładnie 
 
 ![EDA Examples](eda_examples.png)
 
-
+![EDA Summary](eda_summary.tex)
 
 **Wykres A (lewy):** 8 najczęstszych par kształtów. Dominują kombinacje z trójkątami różnych orientacji.
 
