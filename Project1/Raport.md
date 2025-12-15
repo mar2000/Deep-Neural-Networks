@@ -59,11 +59,7 @@ Unikalnych par: 15
   down-left: 662
 ```
 
-**Wykres A (lewy):** 8 najczęstszych par kształtów. Dominują kombinacje z trójkątami różnych orientacji.
-
-**Wykres B (środkowy):** Rozkład liczby kształtów (tylko niezerowe wartości). Widoczne równomierne rozłożenie od 1 do 9.
-
-**Wykres C (prawy):** 4 przykładowe obrazy ze zbioru. Widać binaryjną naturę danych.
+4 przykładowe obrazy ze zbioru. Widać binaryjną naturę danych.
 
 ## 3. Architektura modelu
 
