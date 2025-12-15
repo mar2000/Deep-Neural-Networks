@@ -1,7 +1,9 @@
 # Raport: Multitask Learning dla klasyfikacji i zliczania kształtów geometrycznych
 
 **Autor:** Marysia Nazarczuk
+
 **Nr indeksu:** 417755  
+
 **Data:** 15.12.2025
 
 ---
