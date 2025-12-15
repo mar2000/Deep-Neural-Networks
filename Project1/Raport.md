@@ -1,8 +1,8 @@
 # Raport: Multitask Learning dla klasyfikacji i zliczania kształtów geometrycznych
 
-**Autor:** [Twoje Imię]  
-**Nr indeksu:** [Twój numer]  
-**Data:** [Data]
+**Autor:** Marysia Nazarczuk
+**Nr indeksu:** 417755  
+**Data:** 15.12.2025
 
 ---
 
@@ -38,6 +38,8 @@ Zbiór danych zawiera 10 000 obrazów 28×28 pikseli, każdy zawiera dokładnie 
 
 ### 3.1 Backbone (wymagany)
 
+
+```bash
 nn.Sequential(
 nn.Conv2d(1, 8, 3, stride=1, padding=1), nn.ReLU(),
 nn.Conv2d(8, 16, 3, stride=1, padding=1), nn.ReLU(),
@@ -46,6 +48,9 @@ nn.Conv2d(32, 64, 3, stride=1, padding=1), nn.ReLU(),
 nn.Flatten(start_dim=1),
 nn.Linear(64 * 28 * 28, 256), nn.ReLU()
 )
+```
+
+
 
 
 
