@@ -148,9 +148,7 @@ Loss = NLLLoss(classification) + λ × SmoothL1Loss(regression)
 **Lewy wykres:** RMSE dla każdego typu kształtu.  
 **Prawy wykres:** MAE dla każdego typu kształtu.
 
-### 5.4 Per-pair accuracy
 
-![Per-pair Accuracy](per_pair_accuracy.png)
 
 Dokładność klasyfikacji zgrupowana według par kształtów.
 
