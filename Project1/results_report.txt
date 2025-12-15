@@ -4,28 +4,27 @@ RAPORT Z EKSPERYMENTÓW
 
 Tylko klasyfikacja
 ----------------------------------------
-Czas treningu: 438.3s
-Val Loss: 2.4176
-Accuracy: 0.2130
+Czas treningu: 603.2s
+Strata walidacja: 2.4176
+Dokładność: 0.2130
 F1-Score: 0.1496
 RMSE: 3.1855
 MAE: 1.9024
 
 Tylko regresja
 ----------------------------------------
-Czas treningu: 438.1s
-Val Loss: 0.2429
-Accuracy: 0.0130
+Czas treningu: 678.9s
+Strata walidacja: 0.2429
+Dokładność: 0.0130
 F1-Score: 0.0008
 RMSE: 0.8078
 MAE: 0.4546
 
 Multitask (λ=1.0)
 ----------------------------------------
-Czas treningu: 443.9s
-Val Loss: 2.4624
-Accuracy: 0.3260
+Czas treningu: 706.2s
+Strata walidacja: 2.4624
+Dokładność: 0.3260
 F1-Score: 0.2558
 RMSE: 1.0269
 MAE: 0.5927
-
