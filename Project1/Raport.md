@@ -28,12 +28,13 @@ Zbiór danych zawiera 10 000 obrazów 28×28 pikseli, każdy zawiera dokładnie 
 
 ![EDA Stats](eda_stats.png)
 
-![EDA Examples](eda_examples.png)
+
 
 **Wykres pierwszy (lewy):** 8 najczęstszych par kształtów. Dominują kombinacje z trójkątami różnych orientacji.
 
 **Wykres drugi (prawy):** Rozkład liczby kształtów (tylko niezerowe wartości). Widoczne równomierne rozłożenie od 1 do 9.
 
+![EDA Examples](eda_examples.png)
 
 ```bash
 ============================================================
