@@ -169,6 +169,10 @@ Parametr λ kontroluje balans między zadaniami:
 ## 8. Kod i reprodukcja
 
 Kod dostępny w załączonym pliku `projekt.py`. Do uruchomienia:
-```bash
+/```bash
 pip install -r requirements.txt
-python projekt.py
+python3 projekt.py
+
+
+Pełne trenowanie (~100 epok) zajmuje ~25 minut na Google Colab T4 GPU.
+
