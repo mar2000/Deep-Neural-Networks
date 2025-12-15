@@ -39,7 +39,7 @@ Zbiór danych zawiera 10 000 obrazów 28×28 pikseli, każdy zawiera dokładnie 
 4 przykładowe obrazy ze zbioru. Widać binaryjną naturę danych.
 
 
-```bash
+
 ============================================================
 PODSUMOWANIE ANALIZY DANYCH
 ============================================================
@@ -60,7 +60,7 @@ Unikalnych par: 15
   circles-up: 664
   right-down: 663
   down-left: 662
-```
+
 
 
 
