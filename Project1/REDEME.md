@@ -12,4 +12,4 @@ python3 projekt.py
 ```
 
 
-Pełne trenowanie (~30 epok) zajmuje ~33 minut na moim komputerze.
+Pełne trenowanie (~15 epok) zajmuje ~33 minut na moim komputerze.
