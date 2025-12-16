@@ -1,7 +1,7 @@
 """
 Projekt: Multitask Learning dla klasyfikacji i zliczania kształtów geometrycznych
-Autor: [Twoje imię/nazwisko]
-Data: [Data]
+Autor: Marysia Nazarczuk
+Numer indeksu: 417755
 """
 
 import torch
@@ -43,8 +43,8 @@ NUM_CLASSES = 135                 # Liczba klas klasyfikacji
 REGRESSION_OUTPUTS = 6            # Liczba kształtów do zliczania
 TRAIN_SIZE = 9000                 # Rozmiar zbioru treningowego
 VAL_SIZE = 1000                   # Rozmiar zbioru walidacyjnego
-BATCH_SIZE_TRAIN = 64            # Rozmiar batcha treningowego
-BATCH_SIZE_VAL = 1000            # Rozmiar batcha walidacyjnego
+BATCH_SIZE_TRAIN = 64             # Rozmiar batcha treningowego
+BATCH_SIZE_VAL = 1000             # Rozmiar batcha walidacyjnego
 LEARNING_RATE = 1e-3              # Szybkość uczenia
 MAX_EPOCHS = 100                  # Maksymalna liczba epok
 PATIENCE = 10                     # Cierpliwość dla early stopping
@@ -62,45 +62,41 @@ def download_data():
     Pobiera i rozpakowuje zbiór danych z repozytorium GitHub.
     Zwraca True jeśli operacja się powiodła, False w przeciwnym razie.
     """
-    print("Sprawdzanie dostępności danych...")
+    print("Sprawdzanie dostępności danych")
     
     # Sprawdzenie czy dane już istnieją
     if os.path.exists('data') and os.path.exists('data/labels.csv'):
-        print("✓ Dane już istnieją w lokalnym folderze")
+        print("Dane już istnieją w lokalnym folderze")
         return True
     
-    print("Brak danych lokalnych. Rozpoczynanie pobierania...")
+    print("Brak danych lokalnych. Rozpoczynanie pobierania")
     
     url = "https://github.com/marcin119a/data/raw/refs/heads/main/data_gsn.zip"
     zip_path = "data_gsn.zip"
     
     try:
         # Pobieranie archiwum
-        print(f"Pobieranie z {url}...")
+        print(f"Pobieranie z {url}")
         urllib.request.urlretrieve(url, zip_path)
-        print("✓ Pobrano archiwum danych")
+        print("Pobrano archiwum danych")
         
         # Rozpakowywanie
-        print("Rozpakowywanie archiwum...")
+        print("Rozpakowywanie archiwum")
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(".")
-        print("✓ Rozpakowano dane")
+        print("Rozpakowano dane")
         
         # Weryfikacja
         if os.path.exists('data/labels.csv'):
-            print("✓ Dane pomyślnie przygotowane")
+            print("Dane pomyślnie przygotowane")
             os.remove(zip_path)
             return True
         else:
-            print("✗ Błąd: Brak plików po rozpakowaniu")
+            print("Błąd: Brak plików po rozpakowaniu")
             return False
             
     except Exception as e:
-        print(f"✗ Błąd podczas pobierania: {e}")
-        print("\nInstrukcja ręcznego pobrania danych:")
-        print("1. Otwórz: https://github.com/marcin119a/data/raw/refs/heads/main/data_gsn.zip")
-        print("2. Pobierz plik i wypakuj do folderu 'data/'")
-        print("3. Uruchom program ponownie")
+        print(f"Błąd podczas pobierania: {e}")
         return False
 
 # ============================================================================
@@ -458,6 +454,7 @@ def train_epoch(model, dataloader, criterion, optimizer, device):
     total_loss, cls_loss_total, reg_loss_total = 0, 0, 0
     
     for images, class_labels, count_labels in tqdm(dataloader, desc="Trening"):
+        
         # Przeniesienie danych na odpowiednie urządzenie
         images = images.to(device)
         class_labels = class_labels.to(device)
@@ -785,7 +782,7 @@ def simple_eda():
     
     # Sprawdzenie danych
     if not os.path.exists('data/labels.csv'):
-        print("Brak danych. Próbuję pobrać...")
+        print("Brak danych. Próbuję pobrać")
         success = download_data()
         if not success:
             print("Nie udało się pobrać danych.")
@@ -795,10 +792,10 @@ def simple_eda():
     labels = pd.read_csv('data/labels.csv')
     shape_names = ['squares', 'circles', 'up', 'right', 'down', 'left']
     
-    print(f"\n📊 Statystyki zbioru danych:")
-    print(f"  Liczba obrazów: {len(labels)}")
-    print(f"  Zbiór treningowy: {TRAIN_SIZE}")
-    print(f"  Zbiór walidacyjny: {VAL_SIZE}")
+    print(f"\nStatystyki zbioru danych:")
+    print(f"- Liczba obrazów: {len(labels)}")
+    print(f"- Zbiór treningowy: {TRAIN_SIZE}")
+    print(f"- Zbiór walidacyjny: {VAL_SIZE}")
     
     # Analiza częstości par kształtów
     shape_pairs = []
@@ -809,13 +806,13 @@ def simple_eda():
     
     pair_counts = Counter(shape_pairs)
     
-    print(f"  Unikalnych par kształtów: {len(pair_counts)}")
-    print("  5 najczęstszych par:")
+    print(f"- Unikalnych par kształtów: {len(pair_counts)}")
+    print("- 5 najczęstszych par:")
     for (i, j), count in pair_counts.most_common(5):
-        print(f"    {shape_names[i]}-{shape_names[j]}: {count}")
+        print(f"  * {shape_names[i]}-{shape_names[j]}: {count}")
     
     # Wykres 1: Statystyki
-    print("\n📈 Generowanie wykresów statystyk...")
+    print("\nGenerowanie wykresów statystyk")
     
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
     
@@ -858,10 +855,10 @@ def simple_eda():
     plt.tight_layout()
     plt.savefig('eda_stats.png', dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
-    print("✓ Wygenerowano eda_stats.png")
+    print("- Wygenerowano eda_stats.png")
     
     # Wykres 2: Przykładowe obrazy
-    print("🖼️  Generowanie przykładowych obrazów...")
+    print("\nGenerowanie przykładowych obrazów")
     
     fig2 = plt.figure(figsize=(12, 12))
     
@@ -900,7 +897,7 @@ def simple_eda():
     plt.tight_layout()
     plt.savefig('eda_examples.png', dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
-    print("✓ Wygenerowano eda_examples.png")
+    print("- Wygenerowano eda_examples.png")
     
     # Podsumowanie tekstowe
     with open('eda_summary.txt', 'w') as f:
@@ -917,7 +914,7 @@ def simple_eda():
         for (i, j), count in pair_counts.most_common(10):
             f.write(f"  {shape_names[i]}-{shape_names[j]}: {count}\n")
     
-    print("✓ Wygenerowano eda_summary.txt")
+    print("- Wygenerowano eda_summary.txt")
     print("\n" + "="*60)
     print("EDA ZAKOŃCZONA!")
     print("="*60)
@@ -928,16 +925,16 @@ def simple_eda():
 
 def main():
     """Główna funkcja zarządzająca całym pipeline'em."""
-    print("="*60)
+    print("\n" + ="*60)
     print("PROJEKT: MULTITASK LEARNING - KSZTAŁTY GEOMETRYCZNE")
     print("="*60)
     
     # 1. Przygotowanie danych
     if not os.path.exists('data/labels.csv'):
-        print("\n📥 Pobieranie danych...")
+        print("\n Pobieranie danych")
         success = download_data()
         if not success:
-            print("\n❌ Nie udało się pobrać danych automatycznie.")
+            print("\n Nie udało się pobrać danych automatycznie.")
             print("\nWykonaj ręcznie w terminalu:")
             print("wget https://github.com/marcin119a/data/raw/refs/heads/main/data_gsn.zip")
             print("unzip data_gsn.zip")
@@ -952,7 +949,6 @@ def main():
     print("\n" + "="*60)
     print("PRZEPROWADZANIE EKSPERYMENTÓW")
     print("="*60)
-    print("UWAGA: Dla pełnego treningu ustaw num_epochs na 100")
     
     all_results = []
     
@@ -963,12 +959,12 @@ def main():
             experiment_name="Tylko klasyfikacja",
             loss_type='classification',
             augmentations=True,
-            num_epochs=15  # Skrócone dla demonstracji
+            num_epochs=15  # Liczba epok
         )
         all_results.append(results1)
-        print("✓ Zakończono")
+        print("Zakończono")
     except Exception as e:
-        print(f"✗ Błąd: {e}")
+        print(f"Błąd: {e}")
         import traceback
         traceback.print_exc()
     
@@ -982,9 +978,9 @@ def main():
             num_epochs=15
         )
         all_results.append(results2)
-        print("✓ Zakończono")
+        print("Zakończono")
     except Exception as e:
-        print(f"✗ Błąd: {e}")
+        print(f"Błąd: {e}")
     
     # Eksperyment 3: Multitask
     print("\n[3/3] Multitask (λ=1.0)")
@@ -997,9 +993,9 @@ def main():
             num_epochs=15
         )
         all_results.append(results3)
-        print("✓ Zakończono")
+        print("Zakończono")
     except Exception as e:
-        print(f"✗ Błąd: {e}")
+        print(f"Błąd: {e}")
     
     if all_results:
         # 4. Wizualizacja wyników
@@ -1017,9 +1013,9 @@ def main():
         for i, results in enumerate(all_results):
             try:
                 torch.save(results['model'].state_dict(), f'model_experiment_{i+1}.pth')
-                print(f"✓ Zapisano model {i+1}")
+                print(f"Zapisano model {i+1}")
             except:
-                print(f"✗ Nie udało się zapisać modelu {i+1}")
+                print(f"Nie udało się zapisać modelu {i+1}")
         
         # Tabela wyników
         results_table = []
@@ -1036,7 +1032,7 @@ def main():
         
         with open('results_summary.json', 'w') as f:
             json.dump(results_table, f, indent=2)
-        print("✓ Zapisano results_summary.json")
+        print("Zapisano results_summary.json")
         
         # Raport tekstowy
         with open('results_report.txt', 'w') as f:
@@ -1054,7 +1050,7 @@ def main():
                 f.write(f"RMSE: {results['final_metrics']['rmse_overall']:.4f}\n")
                 f.write(f"MAE: {results['final_metrics']['mae_overall']:.4f}\n\n")
         
-        print("✓ Zapisano results_report.txt")
+        print("Zapisano results_report.txt")
         
         # Podsumowanie
         print("\n" + "="*60)
@@ -1085,9 +1081,9 @@ def main():
     if existing_files:
         for file in existing_files:
             size = os.path.getsize(file)
-            print(f"  ✓ {file} ({size} bajtów)")
+            print(f"  {file} ({size} bajtów)")
     else:
-        print("  ❌ Nie wygenerowano żadnych plików")
+        print(Nie wygenerowano żadnych plików")
 
 # ============================================================================
 # URUCHOMIENIE PROGRAMU
