@@ -120,7 +120,7 @@ def set_seed(seed: int = 42):
 set_seed(42)
 ```
 
-### Dataset [do not modify]
+## Dataset [do not modify]
 
 CIFAR-10 download takes 170 MiB.
 
@@ -212,11 +212,239 @@ def example_from_dataset(idx: int = 3):
 example_from_dataset()
 ```
 
+## Training a classifier [do not modify]
+
+```Python
+def train(
+    model: nn.Module,
+    train_loader: torch.utils.data.DataLoader,
+    val_loader: torch.utils.data.DataLoader,
+    test_loader: torch.utils.data.DataLoader,
+    epochs: int = 5,
+    **optimizer_kwargs: Any,
+) -> None:
+    print(f"🚀 Training CNN for {epochs} epochs...")
+    optimizer = optim.AdamW(model.parameters(), **optimizer_kwargs)
+
+    for epoch in range(epochs):
+        _train_epoch(model, train_loader, optimizer, desc=f"Epoch {epoch + 1}/{epochs} training  ")
+        val_metrics = evaluate(model, val_loader, desc=f"Epoch {epoch + 1}/{epochs} validation")
+        print(
+            f"Epoch {epoch + 1}/{epochs} — "
+            + f"val loss: {val_metrics['loss']:.3f}, val acc: {val_metrics['accuracy']:.1%}"
+        )
+
+    test_metrics = evaluate(model, test_loader, desc="Test Evaluation")
+    print(
+        "✅ Model training complete: "
+        + f"Test loss: {test_metrics['loss']:.3f}, test acc: {test_metrics['accuracy']:.1%}"
+    )
+
+def _train_epoch(
+    model: nn.Module,
+    dataloader: torch.utils.data.DataLoader,
+    optimizer: optim.Optimizer,
+    desc: str,
+) -> dict[str, float]:
+    model.train()
+    device = next(model.parameters()).device
+    total_loss = 0
+    total_correct = 0
+    total_samples = 0
+    progress_bar = tqdm(dataloader, desc=desc)
+    for imgs, labels, _ in progress_bar:
+        imgs, labels = imgs.to(device), labels.to(device)
+        optimizer.zero_grad()
+        outputs = model(imgs)
+        loss = nn.CrossEntropyLoss()(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        total_loss += loss.item()
+
+        _, predicted = torch.max(outputs.data, dim=1)
+        total_samples += labels.shape[0]
+        total_correct += (predicted == labels).sum().item()
+
+        progress_bar.set_postfix(
+            train_loss=f"{total_loss / (total_samples / labels.shape[0]):.3f}",
+            train_acc=f"{total_correct / total_samples:.1%}",
+        )
+
+    return {"loss": total_loss / len(dataloader), "accuracy": total_correct / total_samples}
+
+def evaluate(
+    model: nn.Module, dataloader: torch.utils.data.DataLoader, desc: str
+) -> dict[str, float]:
+    model.eval()
+    device = next(model.parameters()).device
+    total_loss = 0
+    total_correct = 0
+    total_samples = 0
+    with torch.no_grad():
+        for imgs, labels, _mask in tqdm(dataloader, desc=desc):
+            imgs, labels = imgs.to(device), labels.to(device)
+            outputs = model(imgs)
+            loss = nn.CrossEntropyLoss()(outputs, labels)
+            total_loss += loss.item()
+            _, predicted = torch.max(outputs.data, dim=1)
+            total_samples += labels.shape[0]
+            total_correct += (predicted == labels).sum().item()
+
+    return {"loss": total_loss / len(dataloader), "accuracy": total_correct / total_samples}
+
+class DataloaderArgs(TypedDict, total=False):
+    batch_size: int
+    shuffle: bool
+    num_workers: int
+    pin_memory: bool
+
+device = torch.accelerator.current_accelerator(check_available=True) or torch.device("cpu")
+use_accel = device != torch.device("cpu")
+print(use_accel, device)
+
+IMAGENET_MEAN = (0.485, 0.456, 0.406)
+IMAGENET_STD = (0.229, 0.224, 0.225)
+transform = v2.Compose(
+    [
+        v2.ToImage(),
+        v2.ToDtype(torch.float32, scale=True),
+        v2.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+    ]
+)
+inverse_transform = v2.Compose(
+    [
+        v2.Normalize(
+            [-m / s for m, s in zip(IMAGENET_MEAN, IMAGENET_STD, strict=True)],
+            [1 / s for s in IMAGENET_STD],
+        ),
+        v2.ToPILImage(),
+    ]
+)
+
+train_dataset = SyntheticData(dataset_path, transform=transform, split="train")
+val_dataset = SyntheticData(dataset_path, transform=transform, split="val")
+test_dataset = SyntheticData(dataset_path, transform=transform, split="test")
+
+train_kwargs: DataloaderArgs = {
+    "batch_size": 128,
+    "num_workers": 2,
+    "shuffle": True,
+    "pin_memory": use_accel,
+}
+val_kwargs: DataloaderArgs = {"batch_size": 500, "num_workers": 2, "pin_memory": use_accel}
+test_kwargs: DataloaderArgs = val_kwargs
+
+train_loader = DataLoader(train_dataset, **train_kwargs)
+val_loader = DataLoader(val_dataset, **val_kwargs)
+test_loader = DataLoader(test_dataset, **test_kwargs)
+
+print(f"Train dataset size: {len(train_dataset)}")
+print(f"Validation dataset size: {len(val_dataset)}")
+print(f"Test dataset size: {len(test_dataset)}")
+print("✅ DataLoaders created for train, validation, and test sets.")
+
+checkpoint_path = Path("./model_checkpoint.pth")
+
+model = torchvision.models.resnet18(weights=torchvision.models.ResNet18_Weights.IMAGENET1K_V1)
+model.fc = nn.Linear(model.fc.in_features, len(SyntheticData.CLASSES))
+model = model.to(device)
+
+if not checkpoint_path.exists():
+    train(model, train_loader, val_loader, test_loader, epochs=5, lr=2e-3, weight_decay=0.05)
+    torch.save(model.state_dict(), checkpoint_path)
+else:
+    model.load_state_dict(torch.load(checkpoint_path, map_location=device, weights_only=True))
+    metrics = evaluate(model, test_loader, desc="Test Evaluation")
+    print()
+    print(
+        "✅ Model loaded from checkpoint: "
+        + f"Test loss: {metrics['loss']:.3f}, test acc: {metrics['accuracy']:.1%}"
+    )
+```
 
 
+# 1. GradCAM
+ 
+## GradCAM implementation (add your code)
 
 
+```Python
+class GradCAM:
+    """
+    Pure PyTorch implementation of Grad-CAM.
 
+    Usage:
+        grad_cam = GradCAM(model=model, target_layers=[layer1, layer2])
+        grayscale_cam = grad_cam(input_tensor, targets=[class_id])
+    """
+
+    def __init__(self, model: nn.Module, target_layers: Iterable[nn.Module]) -> None:
+      pass
+
+    def __call__(self, input_tensor: Tensor, targets: Iterable[int] | None = None) -> np.ndarray:
+        """
+        Returns: numpy array of shape (B, H, W), values 0..1.
+        """
+        pass
+
+```
+
+## GradCAM results [do not modify]
+
+```Python
+if type(model).__name__ == "ResNet":
+    target_layers = [model.layer2[-1]]
+else:
+    target_layers = [
+        model.get_submodule("features.2.0"),
+        model.get_submodule("features.3.0"),
+        model.get_submodule("features.4.0"),
+    ]
+print(f"Using layers for Grad-CAM: {[type(layer).__name__ for layer in target_layers]}")
+
+def heatmap_to_rgb_image(
+    heatmap: np.ndarray, min: float | None = None, max: float | None = None
+) -> PIL.Image.Image:
+    """
+    Converts a single-channel heatmap to an RGB pillow image using a colormap.
+
+    Args:
+    - heatmap: shape (H, W), will be normalized by mapping min..max to 0..1.
+    - min: minimum value for normalization, defaults to heatmap.min().
+    - max: maximum value for normalization, defaults to heatmap.max()
+    """
+    heatmap = heatmap.astype(np.float32)
+    if min is None:
+        min = heatmap.min()
+    if max is None:
+        max = heatmap.max()
+    heatmap = (heatmap - min) / (max - min + 1e-8)
+    heatmap_uint8 = (np.clip(heatmap, 0.0, 1.0) * 255).astype(np.uint8)
+    heatmap_color = cv2.applyColorMap(heatmap_uint8, cv2.COLORMAP_JET)
+    heatmap_color = cv2.cvtColor(heatmap_color, cv2.COLOR_BGR2RGB)
+    return PIL.Image.fromarray(heatmap_color)
+
+def example_gradcam():
+    grad_cam = GradCAM(model=model, target_layers=target_layers)
+
+    for test_idx in [3, 10, 42]:
+        img, label, mask = test_dataset[test_idx]
+
+        cam = grad_cam(img.unsqueeze(0).to(device), targets=[label])
+        heatmap_img = heatmap_to_rgb_image(cam.squeeze(0), 0, 1)
+
+        show_image_row(
+            {
+                "Input image": inverse_transform(img),
+                "Grad-CAM heatmap": heatmap_img,
+                "Overlay": PIL.Image.blend(inverse_transform(img), heatmap_img, alpha=0.3),
+                "Ground-truth mask": mask,
+            }
+        )
+
+example_gradcam()
+
+```
 
 
 
