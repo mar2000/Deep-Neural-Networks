@@ -1,16 +1,3 @@
-## Kod i reprodukcja
+## Link do colaba 
 
-Kod dostępny w załączonym pliku `projekt.py`. Do uruchomienia:
-
-```bash
-pip install torch torchvision pandas numpy matplotlib scikit-learn tqdm pillow
-
-python3 -m venv venv
-source venv/bin/activate
-
-python3 projekt.py
-```
-
-
-Pełne trenowanie (~15 epok) zajmuje ~30 minut na moim komputerze.
-
+https://colab.research.google.com/gist/mar2000/1fda50af8503a5de84745c8007fe65d3/hw_2_gradcam_and_sam_student.ipynb
