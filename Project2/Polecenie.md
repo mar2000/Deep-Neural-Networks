@@ -447,8 +447,104 @@ example_gradcam()
 ```
 
 
+# 2. Segment Anything Model
+
+## Basic usage [do not modify]
+
+The checkpoint takes 360 MB.
+
+```Python
+# %pip install segment-anything
+!wget -nc -q https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+
+from segment_anything import SamPredictor, sam_model_registry
+from segment_anything.utils.transforms import ResizeLongestSide
+
+sam_checkpoint_path = Path("./sam_vit_b_01ec64.pth")
+assert sam_checkpoint_path.exists(), "SAM checkpoint not found."
+
+# We'll use a single global SAM model to avoid reloading it to memory multiple times.
+sam_model = sam_model_registry["vit_b"](checkpoint=sam_checkpoint_path)
+sam_model.to(device)
+sam_predictor = SamPredictor(sam_model)
+
+class BasicSamPipeline:
+    def __call__(self, images: Tensor) -> Tensor:
+        """
+        Input: normalized images, shape (B, C=3, H, W).
+        Output: masks tensor of shape (B, H, W), dtype=bool.
+        """
+        B, C, H, W = images.shape
+        # The basic pipeline always uses a single center point for each image.
+        point_coords = np.array([[(W // 2, H // 2)] for _ in range(B)])
+
+        # The basic pipeline always uses a single foreground point, no background points.
+        point_labels = np.array([[1] for _ in range(B)], dtype=np.int64)
+
+        return self.segment(images, point_coords, point_labels)
+
+    def segment(
+        self, images: Tensor, point_coords: np.ndarray, point_labels: np.ndarray
+    ) -> Tensor:
+        """
+        Args:
+        - images: normalized images, shape (B, C=3, H, W).
+        - point_coords: point coordinates within each image, shape (B, num_points, 2), format (x,y).
+            Note the format is not (h,w)=(y,x), but (x,y)!
+        - point_labels: point labels, shape (B, num_points), dtype int64.
+            Label 1 is foreground (should be in mask), 0 is background (shouldn't be in mask).
+
+        Returns: segmentation masks, shape (B, H, W), dtype=bool.
+        """
+        B, C, H, W = images.shape
+        assert C == 3, f"Expected images.shape=(B, C=3, H, W), got: {images.shape}"
+        num_points = point_coords.shape[1]
+        assert point_coords.shape == (B, num_points, 2), f"Expected point_coords.shape=({B=}, num_points, 2), got: {point_coords.shape}"
+        assert point_labels.shape == (B, num_points), f"Expected point_labels.shape=({B=}, num_points), got: {point_labels.shape}"
+
+        results = list[Tensor]()
+        for image, pt_coords, pt_labels in zip(images, point_coords, point_labels, strict=True):
+            sam_predictor.set_image(np.array(inverse_transform(image)))
+            masks, scores, _logits = sam_predictor.predict(
+                point_coords=pt_coords, point_labels=pt_labels, multimask_output=True
+            )
+            best_mask = masks[np.argmax(scores)]
+            results.append(torch.tensor(best_mask, dtype=torch.bool))
+        return torch.stack(results)
+
+def example_sam():
+    indices = [3, 10, 42]
+    images, labels, gt_masks = next(iter(test_loader))
+    images, labels, gt_masks = images[indices], labels[indices], gt_masks[indices]
+
+    basic_pipeline = BasicSamPipeline()
+
+    results = basic_pipeline(images).cpu()
+
+    for image, result, gt_mask in zip(images, results, gt_masks, strict=True):
+        show_image_row(
+            {
+                "Input image": inverse_transform(image),
+                "Basic SAM predicted mask": result,
+                "Ground-truth mask": gt_mask,
+            }
+        )
+
+example_sam()
+
+```
 
 
+## Pipeline implementation and evaluation (add your code)
+
+```Python
+sam_eval_loader = DataLoader(test_dataset, batch_size=5, num_workers=0, pin_memory=use_accel)
+```
+
+Add any necessary cells regarding pipeline and evaluation.
+
+```Python
+```
 
 
 
