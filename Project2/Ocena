@@ -1,0 +1,3 @@
+SAM:34/50    GradCAM:30/30    Report:20/20, late multiplier=1
+
+SAM comments: in .ipynb file there is no code regarding part on SAM, there are helper functions defined e.g. to compute distance to the center of mass but they are not used and the code is repeated, when computing hit_rate where should be a distinction between foreground and background points because  it is hard to interpret results without it (foreground points - the higher rate the better, whereas for background points, the smaller, the better) - analogous in the case of distance
