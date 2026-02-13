@@ -1,0 +1,19 @@
+Final score: 10
+Total before multiplier:10/15
+Late multiplier: 1
+
+SwiGluFeedForward: 1/1
+RoPE: 0,5/1 Code modified outside section, return is outside section
+GQA: 2/2
+SlidingWindow: 0/1 Duplicating the code from GQA and the sliding window instead of using calculate_attention, Explicit Python loop over seq_len for creating mask with for loop
+MoE: 1/2 Poor vectorization.
+Transformer Block: 1/1
+Model Pipeline: 1/1
+Training + Evaluation: 0/1 Code modified outside section
+Data Generation: 1/1
+Nucleus+Temperature: 1/1
+Per Token Accurracy: 0,5/1 Poor vectorization - loop per seq_len
+Report: 1/2 The report is superficial.
+
+Grader: Jowita Drozdowicz
+Graded: Maria Nazarczuk
